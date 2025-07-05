@@ -63,9 +63,14 @@
     <section>
       <h2 class="text-xl font-semibold mb-2">📍 Rotas Seguras</h2>
       <p class="text-gray-700">Confira trajetos mais seguros segundo dados da comunidade.</p>
-      <div class="bg-white p-4 rounded shadow mt-2">
-        <p class="text-gray-500">[ Integração com API de mapas aqui ]</p>
-      </div>
+       <form id="rota-form" class="bg-gray-100 p-4 rounded shadow space-y-4 max-w-xl">
+    <input id="cep-destino" type="text" placeholder="Digite o CEP de destino (ex: 41706-755)" class="w-full p-2 border rounded" required />
+    <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded">Verificar Rota</button>
+  </form>
+
+  <div id="rota-resultado" class="bg-white p-4 mt-4 rounded shadow text-gray-800 hidden">
+    <!-- Resultado da rota aparece aqui -->
+  </div>
     </section>
   </main>
 

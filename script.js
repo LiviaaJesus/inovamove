@@ -64,6 +64,34 @@ document.getElementById("alertForm").addEventListener("submit", async function (
     alert("❌ Erro: " + err.message);
   }
 });
+// Evento do formulário de rotas seguras
+document.getElementById("rota-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const cepDestino = document.getElementById("cep-destino").value.trim();
+  const rotaResultado = document.getElementById("rota-resultado");
+
+  if (cepDestino === "") {
+    rotaResultado.textContent = "Por favor, digite um CEP válido.";
+    rotaResultado.classList.remove("hidden");
+    return;
+  }
+
+  if (cepsPerigosos.includes(cepDestino)) {
+    rotaResultado.innerHTML = `
+      <p class="text-red-600 font-semibold">⚠️ Atenção! A rota até o CEP <strong>${cepDestino}</strong> passa por áreas com ocorrências recentes.</p>
+      <p>Tente escolher outro trajeto ou volte mais tarde.</p>
+    `;
+  } else {
+    rotaResultado.innerHTML = `
+      <p class="text-green-700 font-semibold">✅ Rota segura identificada!</p>
+      <p>Você pode seguir até o destino <strong>${cepDestino}</strong> com base nos dados da comunidade — sem ocorrências registradas.</p>
+    `;
+  }
+
+  rotaResultado.classList.remove("hidden");
+});
 
 // Inicializa o mapa ao carregar a página
 window.onload = initMap;
+
