@@ -1,24 +1,35 @@
-
 function initMap() {
-  const map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: -23.5505, lng: -46.6333 },
-    zoom: 12,
-  });
+  // Inicializa o mapa com Leaflet
+  var map = L.map('map').setView([-23.5505, -46.6333], 13); // São Paulo
 
-  new google.maps.Marker({
-    position: { lat: -23.5505, lng: -46.6333 },
-    map,
-    title: "Alerta exemplo",
-  });
+  // Mapa base gratuito do OpenStreetMap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Exemplo de alerta fixo
+  L.marker([-23.5505, -46.6333])
+    .addTo(map)
+    .bindPopup('🚨 Alerta exemplo: Tiroteio na região')
+    .openPopup();
 }
 
+// Inicializar o mapa quando a página carregar
+window.onload = initMap;
+
+// Captura e exibe os dados do formulário de alerta
 document.getElementById("alertForm").addEventListener("submit", function (e) {
   e.preventDefault();
+
   const data = {
     descricao: this.descricao.value,
     tipo: this.tipo.value,
     localText: this.localText.value,
+    cep: this.cep.value
   };
-  console.log("Alerta enviado:", data);
-  alert("Alerta enviado com sucesso! (Simulação)");
+
+  console.log("📤 Alerta enviado:", data);
+  alert("✅ Alerta enviado com sucesso! (simulação)");
+
+  this.reset(); // limpa o formulário após envio
 });
