@@ -165,5 +165,34 @@ async function carregarComentarios() {
   }
 }
 
+// Seleciona os elementos
+const commentForm = document.getElementById('comment-form');
+const commentsSection = document.getElementById('comments-section');
+const userComment = document.getElementById('user-comment');
+
+// Função para criar o elemento do comentário e adicionar na página
+function addComment(text) {
+  const commentDiv = document.createElement('div');
+  commentDiv.className = 'bg-gray-100 p-3 rounded shadow';
+
+  // Aqui você pode formatar melhor o comentário, exemplo:
+  commentDiv.textContent = text;
+
+  commentsSection.prepend(commentDiv); // adiciona no topo
+}
+
+// Evento de envio do formulário
+commentForm.addEventListener('submit', function (e) {
+  e.preventDefault(); // previne recarregar a página
+
+  const commentText = userComment.value.trim();
+  if (!commentText) return; // não adiciona comentário vazio
+
+  addComment(commentText);
+
+  userComment.value = ''; // limpa textarea
+  userComment.focus();
+});
+ 
 // ✅ Inicia o mapa
 window.onload = initMap;
