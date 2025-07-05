@@ -193,3 +193,9 @@ footer {
     max-width: 100%;
   }
 }
+
+:root {
+  --azul: #1e3a8a;
+  --verde: #047857;
+  --cinza-fundo: #f9fafb;
+}

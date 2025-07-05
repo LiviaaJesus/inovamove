@@ -5,62 +5,65 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>InovaMove - Segurança Pública Colaborativa</title>
- <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    /* Ajuste para o mapa ocupar o espaço definido */
     #map { height: 16rem; }
   </style>
 </head>
 <body class="bg-white text-gray-900 font-sans">
 
-  <header class="bg-blue-900 text-white p-4 shadow flex justify-between items-center">
-    <div class="flex items-center space-x-4">
-      <img src="logo 1.jpg" alt="Logo InovaMove" class="h-10 rounded" />
-      <h1 class="text-xl font-bold">InovaMove</h1>
+  <!-- Cabeçalho Moderno -->
+  <header class="bg-blue-900 text-white px-6 py-4 shadow-md">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center">
+      <div class="flex items-center space-x-4">
+        <img src="logo 1.jpg" alt="Logo InovaMove" class="h-20 rounded shadow-lg" />
+        <h1 class="text-3xl font-extrabold tracking-wide">InovaMove</h1>
+      </div>
+      <nav class="mt-4 sm:mt-0 space-x-4 text-base font-medium">
+        <a href="index.html" class="px-3 py-2 rounded hover:bg-white hover:text-blue-900 transition duration-200 border border-white">Início</a>
+        <a href="quemsomos.html" class="px-3 py-2 rounded hover:bg-white hover:text-blue-900 transition duration-200 border border-white">Quem Somos</a>
+        <a href="contato.html" class="px-3 py-2 rounded hover:bg-white hover:text-blue-900 transition duration-200 border border-white">Contato</a>
+        <a href="faq.html" class="px-3 py-2 rounded hover:bg-white hover:text-blue-900 transition duration-200 border border-white">FAQ</a>
+      </nav>
     </div>
-    <nav class="space-x-4">
-      <a href="index.html" class="hover:underline">Início</a>
-      <a href="quemsomos.html" class="hover:underline">Quem Somos</a>
-      <a href="#" class="hover:underline">Contato</a>
-      <a href="faq.html" class="hover:underline">FAQ</a>
-    </nav>
   </header>
 
-  <main class="p-4 space-y-6 max-w-4xl mx-auto">
+  <!-- Conteúdo Principal -->
+  <main class="max-w-5xl mx-auto py-10 px-6 space-y-12">
 
-    <!-- Mapa com alertas -->
-    <section>
-      <h2 class="text-xl font-semibold mb-2 text-blue-900">🚨 Alertas ao Vivo</h2>
+    <!-- Mapa -->
+    <section class="bg-gray-50 p-6 rounded-lg shadow border space-y-4">
+      <h2 class="text-2xl font-bold text-blue-900">🚨 Alertas ao Vivo</h2>
       <div id="map" class="rounded border"></div>
     </section>
 
     <!-- Formulário de Alerta -->
-    <section>
-      <h2 class="text-xl font-semibold mb-2 text-green-700">📢 Envie um Alerta</h2>
-      <form id="alertForm" class="bg-gray-100 p-4 rounded shadow space-y-4">
-        <input name="descricao" type="text" placeholder="Descrição do incidente" class="w-full p-2 border rounded" required />
-        <select name="tipo" class="w-full p-2 border rounded" required>
+    <section class="bg-gray-50 p-6 rounded-lg shadow border space-y-4">
+      <h2 class="text-2xl font-bold text-blue-900">📢 Envie um Alerta</h2>
+      <form id="alertForm" class="space-y-4">
+        <input name="descricao" type="text" placeholder="Descrição do incidente" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700" required />
+        <select name="tipo" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700" required>
           <option value="">Tipo de Incidente</option>
           <option value="Tiroteio">Tiroteio</option>
           <option value="Assalto">Assalto</option>
           <option value="Sequestro">Sequestro</option>
           <option value="Desaparecimento">Desaparecimento</option>
         </select>
-        <input name="localText" type="text" placeholder="Local (ex: Rua tal, Bairro)" class="w-full p-2 border rounded" required />
-        <input name="cep" type="text" placeholder="CEP (ex: 41706-755)" pattern="\d{5}-?\d{3}" title="Digite um CEP válido, ex: 41706-755" class="w-full p-2 border rounded" required />
-        <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition">Enviar Alerta</button>
+        <input name="localText" type="text" placeholder="Local (ex: Rua tal, Bairro)" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700" required />
+        <input name="cep" type="text" placeholder="CEP (ex: 41706-755)" pattern="\d{5}-?\d{3}" title="Digite um CEP válido" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700" required />
+        <button type="submit" class="w-full bg-blue-700 text-white px-6 py-3 rounded hover:bg-blue-800 transition font-semibold shadow">Enviar Alerta</button>
       </form>
     </section>
 
     <!-- Fórum da Comunidade -->
-    <section class="mb-6">
-      <h2 class="text-xl font-semibold mb-2">👥 Fórum da Comunidade</h2>
-      <p class="text-gray-700 mb-2">Compartilhe informações com seus vizinhos.</p>
+    <section class="bg-gray-50 p-6 rounded-lg shadow border space-y-4">
+      <h2 class="text-2xl font-bold text-blue-900">👥 Fórum da Comunidade</h2>
+      <p class="text-gray-700">Compartilhe informações com seus vizinhos.</p>
 
-      <form id="comment-form" class="mb-4">
-        <textarea id="user-comment" class="w-full p-3 border border-gray-300 rounded mb-2 resize-none" placeholder="Digite seu comentário aqui..." required></textarea>
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">Enviar Comentário</button>
+      <form id="comment-form" class="space-y-4">
+        <textarea id="user-comment" class="w-full p-4 border border-gray-300 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-700" placeholder="Digite seu comentário aqui..." required></textarea>
+        <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded transition font-semibold shadow">Enviar Comentário</button>
       </form>
 
       <div id="comments-section" class="space-y-4">
@@ -68,27 +71,27 @@
       </div>
     </section>
 
-    <!-- Verificação de Rotas Seguras -->
-    <section>
-      <h2 class="text-xl font-semibold mb-2">📍 Rotas Seguras</h2>
-      <p class="text-gray-700 mb-2">Confira trajetos mais seguros segundo dados da comunidade.</p>
+    <!-- Verificação de Rotas -->
+    <section class="bg-gray-50 p-6 rounded-lg shadow border space-y-4">
+      <h2 class="text-2xl font-bold text-blue-900">📍 Rotas Seguras</h2>
+      <p class="text-gray-700">Confira trajetos mais seguros segundo dados da comunidade.</p>
 
-      <form id="rota-form" class="bg-gray-100 p-4 rounded shadow space-y-4">
-        <input id="cep-destino" type="text" placeholder="Digite o CEP de destino (ex: 41706-755)" pattern="\d{5}-?\d{3}" title="Digite um CEP válido, ex: 41706-755" class="w-full p-2 border rounded" required />
-        <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition">Verificar Rota</button>
+      <form id="rota-form" class="space-y-4">
+        <input id="cep-destino" type="text" placeholder="Digite o CEP de destino (ex: 41706-755)" pattern="\d{5}-?\d{3}" title="Digite um CEP válido" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-700" required />
+        <button type="submit" class="w-full bg-blue-700 text-white px-6 py-3 rounded hover:bg-blue-800 transition font-semibold shadow">Verificar Rota</button>
       </form>
 
       <div id="rota-resultado" class="bg-white p-4 mt-4 rounded shadow text-gray-800 hidden"></div>
     </section>
-
   </main>
 
+  <!-- Rodapé -->
   <footer class="bg-blue-900 text-white text-center p-4 mt-10">
-    <p>© 2025 InovaMove – Por uma cidade mais segura, juntos.</p>
+    <p class="text-sm">© 2025 InovaMove – Por uma cidade mais segura, juntos.</p>
   </footer>
 
+  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="script.js"></script>
-
 </body>
 </html>
