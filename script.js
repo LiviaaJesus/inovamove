@@ -1,35 +1,68 @@
+let map;
+
 function initMap() {
   // Inicializa o mapa com Leaflet
-  var map = L.map('map').setView([-23.5505, -46.6333], 13); // São Paulo
+  map = L.map('map').setView([-23.5505, -46.6333], 13); // São Paulo
 
   // Mapa base gratuito do OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Exemplo de alerta fixo
+  // Alerta de exemplo fixo
   L.marker([-23.5505, -46.6333])
     .addTo(map)
     .bindPopup('🚨 Alerta exemplo: Tiroteio na região')
     .openPopup();
 }
 
-// Inicializar o mapa quando a página carregar
-window.onload = initMap;
+// Converte o CEP em coordenadas via Nominatim (OpenStreetMap)
+async function getCoordinatesFromCEP(cep) {
+  const response = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cep}&country=Brazil&format=json`);
+  const data = await response.json();
 
-// Captura e exibe os dados do formulário de alerta
-document.getElementById("alertForm").addEventListener("submit", function (e) {
+  if (data && data.length > 0) {
+    return {
+      lat: parseFloat(data[0].lat),
+      lon: parseFloat(data[0].lon)
+    };
+  } else {
+    throw new Error("CEP não localizado no mapa.");
+  }
+}
+
+// Captura o envio do formulário e adiciona o alerta no mapa
+document.getElementById("alertForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  const data = {
-    descricao: this.descricao.value,
-    tipo: this.tipo.value,
-    localText: this.localText.value,
-    cep: this.cep.value
+  const descricao = this.descricao.value;
+  const tipo = this.tipo.value;
+  const localText = this.localText.value;
+  const cep = this.cep.value;
+
+  const dados = {
+    descricao,
+    tipo,
+    localText,
+    cep
   };
 
-  console.log("📤 Alerta enviado:", data);
-  alert("✅ Alerta enviado com sucesso! (simulação)");
+  console.log("📤 Alerta enviado:", dados);
 
-  this.reset(); // limpa o formulário após envio
+  try {
+    const coords = await getCoordinatesFromCEP(cep);
+
+    L.marker([coords.lat, coords.lon])
+      .addTo(map)
+      .bindPopup(`🚨 <strong>${tipo}</strong><br>${descricao}<br><small>${localText}</small>`)
+      .openPopup();
+
+    alert("✅ Alerta adicionado ao mapa!");
+    this.reset(); // limpa o formulário
+  } catch (err) {
+    alert("❌ Erro: " + err.message);
+  }
 });
+
+// Inicializa o mapa ao carregar a página
+window.onload = initMap;
