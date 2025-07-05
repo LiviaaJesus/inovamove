@@ -1,11 +1,12 @@
 let map;
 
-function initMap() {
-  // Inicializa o mapa com Leaflet
- // Inicializa o mapa com Leaflet na região de Boca do Rio - Salvador
-  map = L.map('map').setView([-12.9761, -38.4554], 15); // Boca do Rio
+// Lista de CEPs com ocorrências perigosas (exemplo)
+const cepsPerigosos = ["41706-755", "41710-220", "40285-001"];
 
-  // Mapa base gratuito do OpenStreetMap
+// Inicializa o mapa
+function initMap() {
+  map = L.map('map').setView([-12.9761, -38.4554], 15); // Boca do Rio - Salvador
+
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
@@ -17,7 +18,7 @@ function initMap() {
     .openPopup();
 }
 
-// Converte o CEP em coordenadas via Nominatim (OpenStreetMap)
+// Converte CEP em coordenadas com Nominatim
 async function getCoordinatesFromCEP(cep) {
   const response = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cep}&country=Brazil&format=json`);
   const data = await response.json();
@@ -32,7 +33,7 @@ async function getCoordinatesFromCEP(cep) {
   }
 }
 
-// Captura o envio do formulário e adiciona o alerta no mapa
+// Evento: envio de alerta
 document.getElementById("alertForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -41,12 +42,7 @@ document.getElementById("alertForm").addEventListener("submit", async function (
   const localText = this.localText.value;
   const cep = this.cep.value;
 
-  const dados = {
-    descricao,
-    tipo,
-    localText,
-    cep
-  };
+  const dados = { descricao, tipo, localText, cep };
 
   console.log("📤 Alerta enviado:", dados);
 
@@ -59,12 +55,21 @@ document.getElementById("alertForm").addEventListener("submit", async function (
       .openPopup();
 
     alert("✅ Alerta adicionado ao mapa!");
-    this.reset(); // limpa o formulário
+    this.reset(); // Limpa o formulário
+
+    // Envia os dados para o Google Sheets (se configurado)
+    await fetch("https://script.google.com/macros/s/AKfycbyJ1NCeQOa_35pitbdSa4iGQYhHN9hksGhWaJp6EL2Sj3RUgqTOtPGSnnrnE__HKFABug/exec", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados)
+    });
+
   } catch (err) {
     alert("❌ Erro: " + err.message);
   }
 });
-// Evento do formulário de rotas seguras
+
+// Evento: verificação de rota segura
 document.getElementById("rota-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -92,6 +97,20 @@ document.getElementById("rota-form").addEventListener("submit", function (e) {
   rotaResultado.classList.remove("hidden");
 });
 
-// Inicializa o mapa ao carregar a página
-window.onload = initMap;
+// Evento: comentários no fórum
+document.getElementById("comment-form").addEventListener("submit", function (e) {
+  e.preventDefault();
 
+  const comentario = document.getElementById("user-comment").value.trim();
+  if (!comentario) return;
+
+  const novoComentario = document.createElement("div");
+  novoComentario.classList.add("p-3", "bg-gray-100", "rounded", "border", "text-gray-800");
+  novoComentario.textContent = comentario;
+
+  document.getElementById("comments-section").appendChild(novoComentario);
+  document.getElementById("user-comment").value = "";
+});
+
+// Inicializa o mapa
+window.onload = initMap;
