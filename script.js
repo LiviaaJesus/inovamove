@@ -31,22 +31,22 @@ const icons = {
   })
 };
 
-// ✅ Inicializa o mapa Leaflet
+// ✅ Inicializa o mapa Leaflet em Boca do Rio
 function initMap() {
-  map = L.map('map').setView([-12.9761, -38.4554], 15); // Boca do Rio - Salvador
+  map = L.map('map').setView([-12.9761, -38.4554], 15);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Exemplo fixo
+  // Alerta exemplo
   L.marker([-12.9761, -38.4554], { icon: icons["Tiroteio"] })
     .addTo(map)
     .bindPopup('🚨 Alerta exemplo: Tiroteio na região')
     .openPopup();
 }
 
-// ✅ Converte o CEP para coordenadas
+// ✅ Converte o CEP em coordenadas (via OpenStreetMap/Nominatim)
 async function getCoordinatesFromCEP(cep) {
   const response = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cep}&country=Brazil&format=json`);
   const data = await response.json();
@@ -61,7 +61,7 @@ async function getCoordinatesFromCEP(cep) {
   }
 }
 
-// ✅ Formulário de envio de alerta
+// ✅ Envio de alerta
 document.getElementById("alertForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -74,7 +74,7 @@ document.getElementById("alertForm").addEventListener("submit", async function (
   try {
     const coords = await getCoordinatesFromCEP(cep);
 
-    // Adiciona marcador no mapa
+    // Adiciona no mapa
     L.marker([coords.lat, coords.lon], {
       icon: icons[tipo] || icons["Desaparecimento"]
     })
@@ -82,8 +82,8 @@ document.getElementById("alertForm").addEventListener("submit", async function (
       .bindPopup(`🚨 <strong>${tipo}</strong><br>${descricao}<br><small>${localText}</small>`)
       .openPopup();
 
-    // Envia para Google Sheets via SheetDB
-    const sheetURL = "https://sheetdb.io/api/v1/fnra9k6ukz7mm"; // Substitua aqui
+    // Envia para SheetDB (Google Sheets)
+    const sheetURL = "https://sheetdb.io/api/v1/fnra9k6ukz7mm";
     await fetch(sheetURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -105,7 +105,7 @@ document.getElementById("alertForm").addEventListener("submit", async function (
   }
 });
 
-// ✅ Verifica rota com base nos CEPs perigosos
+// ✅ Verifica se rota passa por área perigosa
 document.getElementById("rota-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -148,5 +148,5 @@ document.getElementById("comment-form").addEventListener("submit", function (e) 
   document.getElementById("user-comment").value = "";
 });
 
-// ✅ Inicia o mapa
+// ✅ Inicializa o mapa ao carregar a página
 window.onload = initMap;
