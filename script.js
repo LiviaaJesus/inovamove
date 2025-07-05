@@ -2,7 +2,8 @@ let map;
 
 function initMap() {
   // Inicializa o mapa com Leaflet
-  map = L.map('map').setView([-23.5505, -46.6333], 13); // São Paulo
+ // Inicializa o mapa com Leaflet na região de Boca do Rio - Salvador
+  map = L.map('map').setView([-12.9761, -38.4554], 15); // Boca do Rio
 
   // Mapa base gratuito do OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -10,7 +11,7 @@ function initMap() {
   }).addTo(map);
 
   // Alerta de exemplo fixo
-  L.marker([-23.5505, -46.6333])
+  L.marker([-12.9761, -38.4554])
     .addTo(map)
     .bindPopup('🚨 Alerta exemplo: Tiroteio na região')
     .openPopup();
