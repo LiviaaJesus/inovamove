@@ -8,6 +8,13 @@
 </head>
 <body class="bg-gray-100 text-gray-900 font-sans">
 
+    <script>
+  const email = localStorage.getItem('userEmail');
+  if (!email) {
+    window.location.href = "login.html";
+  }
+</script>
+
   <!-- Cabeçalho Moderno -->
   <header class="bg-blue-900 text-white px-6 py-4 shadow-md">
     <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center">

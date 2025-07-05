@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - InovaMove</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-blue-50 flex items-center justify-center min-h-screen font-sans">
+
+  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-md space-y-6 border border-blue-100">
+    <div class="flex flex-col items-center space-y-2">
+      <img src="logo 1.jpg" alt="Logo InovaMove" class="h-20 w-20 rounded-full shadow-md border border-blue-300" />
+      <h1 class="text-3xl font-extrabold text-blue-900">InovaMove</h1>
+      <p class="text-gray-500 text-sm">🔐 Acesso seguro à plataforma</p>
+    </div>
+
+    <!-- Formulário de login -->
+    <form id="login-form" class="space-y-4">
+      <div>
+        <label for="email" class="block text-sm font-semibold text-gray-700">E-mail</label>
+        <input type="email" id="email" required placeholder="Seu e-mail" class="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <div>
+        <label for="password" class="block text-sm font-semibold text-gray-700">Senha</label>
+        <input type="password" id="password" required placeholder="Sua senha" class="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <button type="submit" class="w-full bg-blue-900 text-white p-3 rounded hover:bg-blue-800 transition font-semibold">
+        Entrar
+      </button>
+      <button type="button" onclick="showRegister()" class="w-full text-sm text-blue-700 underline text-center">Criar nova conta</button>
+    </form>
+
+    <!-- Formulário de cadastro -->
+    <form id="register-form" class="space-y-4 hidden">
+      <div>
+        <label for="new-email" class="block text-sm font-semibold text-gray-700">Novo e-mail</label>
+        <input type="email" id="new-email" required placeholder="novo@email.com" class="w-full p-3 border rounded focus:ring-2 focus:ring-green-500" />
+      </div>
+
+      <div>
+        <label for="new-password" class="block text-sm font-semibold text-gray-700">Nova senha</label>
+        <input type="password" id="new-password" required placeholder="Crie uma senha" class="w-full p-3 border rounded focus:ring-2 focus:ring-green-500" />
+      </div>
+
+      <button type="button" onclick="register()" class="w-full bg-green-700 text-white p-3 rounded hover:bg-green-800 transition font-semibold">
+        Cadastrar
+      </button>
+      <button type="button" onclick="showLogin()" class="w-full text-sm text-blue-700 underline text-center">Voltar para login</button>
+    </form>
+
+    <p id="error" class="text-red-600 text-sm text-center mt-2"></p>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    function showRegister() {
+      loginForm.classList.add('hidden');
+      registerForm.classList.remove('hidden');
+      document.getElementById('error').textContent = "";
+    }
+
+    function showLogin() {
+      registerForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      document.getElementById('error').textContent = "";
+    }
+
+    function register() {
+      const email = document.getElementById('new-email').value;
+      const password = document.getElementById('new-password').value;
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userPassword', password);
+      alert('Conta criada com sucesso! Faça login agora.');
+      showLogin();
+    }
+
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const storedEmail = localStorage.getItem('userEmail');
+      const storedPassword = localStorage.getItem('userPassword');
+
+      if (email === storedEmail && password === storedPassword) {
+        window.location.href = "index.html";
+      } else {
+        document.getElementById('error').textContent = "E-mail ou senha inválidos.";
+      }
+    });
+  </script>
+</body>
+</html>
+
