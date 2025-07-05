@@ -49,8 +49,14 @@
     <section class="mb-6">
       <h2 class="text-xl font-semibold mb-2">👥 Fórum da Comunidade</h2>
       <p class="text-gray-700 mb-2">Compartilhe informações com seus vizinhos.</p>
-      <div class="bg-white p-4 rounded shadow">
-        <p class="text-gray-500">[ Fórum ou comentários integrados aqui ]</p>
+
+       <form id="comment-form" class="mb-4">
+        <textarea id="user-comment" class="w-full p-3 border border-gray-300 rounded mb-2 resize-none" placeholder="Digite seu comentário aqui..." required></textarea>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Enviar Comentário</button>
+      </form>
+
+      <div id="comments-section" class="space-y-4">
+        <!-- Comentários aparecerão aqui -->
       </div>
     </section>
 
