@@ -96,5 +96,13 @@
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="script.js"></script>
+
+<script>
+  const email = localStorage.getItem('userEmail');
+  if (!email) {
+    window.location.href = "login.html";
+  }
+</script>
+  
 </body>
 </html>
