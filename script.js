@@ -83,7 +83,7 @@ document.getElementById("alertForm").addEventListener("submit", async function (
       .openPopup();
 
     // Envia para Google Sheets via SheetDB
-    const sheetURL = "https://sheetdb.io/api/v1/SEU_CODIGO_AQUI"; // Substitua aqui
+    const sheetURL = "https://sheetdb.io/api/v1/fnra9k6ukz7mm"; // Substitua aqui
     await fetch(sheetURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
