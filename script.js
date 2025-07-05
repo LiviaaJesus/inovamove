@@ -31,7 +31,9 @@ const icons = {
   })
 };
 
-// ✅ Inicializa o mapa Leaflet em Boca do Rio
+const sheetURL = "https://sheetdb.io/api/v1/fnra9k6ukz7mm";
+
+// ✅ Inicializa o mapa Leaflet
 function initMap() {
   map = L.map('map').setView([-12.9761, -38.4554], 15);
 
@@ -39,25 +41,22 @@ function initMap() {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Alerta exemplo
   L.marker([-12.9761, -38.4554], { icon: icons["Tiroteio"] })
     .addTo(map)
     .bindPopup('🚨 Alerta exemplo: Tiroteio na região')
     .openPopup();
+
+  carregarComentarios();
 }
 
-// ✅ Converte o CEP em coordenadas (via OpenStreetMap/Nominatim)
+// ✅ Pega coordenadas do CEP
 async function getCoordinatesFromCEP(cep) {
   const response = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cep}&country=Brazil&format=json`);
   const data = await response.json();
-
-  if (data && data.length > 0) {
-    return {
-      lat: parseFloat(data[0].lat),
-      lon: parseFloat(data[0].lon)
-    };
+  if (data.length > 0) {
+    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
   } else {
-    throw new Error("CEP não localizado no mapa.");
+    throw new Error("CEP não encontrado.");
   }
 }
 
@@ -74,27 +73,16 @@ document.getElementById("alertForm").addEventListener("submit", async function (
   try {
     const coords = await getCoordinatesFromCEP(cep);
 
-    // Adiciona no mapa
-    L.marker([coords.lat, coords.lon], {
-      icon: icons[tipo] || icons["Desaparecimento"]
-    })
+    L.marker([coords.lat, coords.lon], { icon: icons[tipo] || icons["Desaparecimento"] })
       .addTo(map)
       .bindPopup(`🚨 <strong>${tipo}</strong><br>${descricao}<br><small>${localText}</small>`)
       .openPopup();
 
-    // Envia para SheetDB (Google Sheets)
-    const sheetURL = "https://sheetdb.io/api/v1/fnra9k6ukz7mm";
     await fetch(sheetURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        data: {
-          descricao,
-          tipo,
-          localText,
-          cep,
-          data
-        }
+        data: { descricao, tipo, localText, cep, data }
       })
     });
 
@@ -105,7 +93,7 @@ document.getElementById("alertForm").addEventListener("submit", async function (
   }
 });
 
-// ✅ Verifica se rota passa por área perigosa
+// ✅ Verifica rotas
 document.getElementById("rota-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -121,32 +109,61 @@ document.getElementById("rota-form").addEventListener("submit", function (e) {
   if (cepsPerigosos.includes(cepDestino)) {
     rotaResultado.innerHTML = `
       <p class="text-red-600 font-semibold">⚠️ Atenção! A rota até o CEP <strong>${cepDestino}</strong> passa por áreas com ocorrências recentes.</p>
-      <p>Tente escolher outro trajeto ou volte mais tarde.</p>
-    `;
+      <p>Tente escolher outro trajeto ou volte mais tarde.</p>`;
   } else {
     rotaResultado.innerHTML = `
       <p class="text-green-700 font-semibold">✅ Rota segura identificada!</p>
-      <p>Você pode seguir até o destino <strong>${cepDestino}</strong> com base nos dados da comunidade — sem ocorrências registradas.</p>
-    `;
+      <p>Você pode seguir até o destino <strong>${cepDestino}</strong> com base nos dados da comunidade — sem ocorrências registradas.</p>`;
   }
 
   rotaResultado.classList.remove("hidden");
 });
 
-// ✅ Comentários da comunidade
-document.getElementById("comment-form").addEventListener("submit", function (e) {
+// ✅ Envia comentário para SheetDB
+document.getElementById("comment-form").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const comentario = document.getElementById("user-comment").value.trim();
+  const data = new Date().toLocaleString("pt-BR");
+
   if (!comentario) return;
 
-  const novoComentario = document.createElement("div");
-  novoComentario.classList.add("p-3", "bg-gray-100", "rounded", "border", "text-gray-800");
-  novoComentario.textContent = comentario;
+  try {
+    await fetch(sheetURL + "?sheet=comentarios", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: { comentario, data } })
+    });
 
-  document.getElementById("comments-section").appendChild(novoComentario);
-  document.getElementById("user-comment").value = "";
+    const div = document.createElement("div");
+    div.classList.add("p-3", "bg-gray-100", "rounded", "border", "text-gray-800");
+    div.innerHTML = `<p>${comentario}</p><small class="text-gray-500">${data}</small>`;
+    document.getElementById("comments-section").appendChild(div);
+
+    document.getElementById("user-comment").value = "";
+  } catch (err) {
+    alert("Erro ao salvar comentário.");
+  }
 });
 
-// ✅ Inicializa o mapa ao carregar a página
+// ✅ Carrega comentários da planilha (como FAQ)
+async function carregarComentarios() {
+  try {
+    const res = await fetch(sheetURL + "?sheet=comentarios");
+    const comentarios = await res.json();
+    const container = document.getElementById("comments-section");
+    container.innerHTML = "";
+
+    comentarios.forEach(c => {
+      const div = document.createElement("div");
+      div.classList.add("p-3", "bg-gray-50", "rounded", "border", "text-gray-800");
+      div.innerHTML = `<p>${c.comentario}</p><small class="text-gray-500">${c.data}</small>`;
+      container.appendChild(div);
+    });
+  } catch (err) {
+    console.error("Erro ao carregar comentários:", err);
+  }
+}
+
+// ✅ Inicia o mapa
 window.onload = initMap;

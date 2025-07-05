@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FAQ da Comunidade - InovaMove</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <header class="bg-blue-900 text-white p-4 shadow flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <img src="logo 1.jpg" alt="Logo InovaMove" class="h-10 rounded" />
+      <h1 class="text-xl font-bold">InovaMove</h1>
+    </div>
+    <nav class="space-x-4">
+      <a href="index.html" class="hover:underline">Início</a>
+      <a href="faq.html" class="underline">FAQ</a>
+    </nav>
+  </header>
+
+  <main class="max-w-3xl mx-auto py-8 px-4">
+    <h2 class="text-2xl font-bold text-blue-900 mb-6">❓ FAQ da Comunidade</h2>
+    <p class="mb-4 text-gray-700">Veja as dúvidas, comentários e relatos dos usuários da comunidade:</p>
+
+    <div id="faq-container" class="space-y-4">
+      <!-- Comentários da comunidade serão exibidos aqui -->
+    </div>
+  </main>
+
+  <footer class="bg-blue-900 text-white text-center p-4 mt-10">
+    <p>© 2025 InovaMove – Por uma cidade mais segura, juntos.</p>
+  </footer>
+
+  <script>
+    const sheetURL = "https://sheetdb.io/api/v1/fnra9k6ukz7mm?sheet=comentarios";
+
+    async function carregarFAQ() {
+      try {
+        const res = await fetch(sheetURL);
+        const comentarios = await res.json();
+        const container = document.getElementById("faq-container");
+
+        if (comentarios.length === 0) {
+          container.innerHTML = "<p class='text-gray-600'>Nenhum comentário ainda.</p>";
+          return;
+        }
+
+        comentarios.forEach(c => {
+          const div = document.createElement("div");
+          div.className = "bg-white p-4 rounded shadow border";
+          div.innerHTML = `
+            <p class="text-gray-800">${c.comentario}</p>
+            <p class="text-sm text-gray-500 mt-2">🕓 ${c.data}</p>
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        document.getElementById("faq-container").innerHTML = "<p class='text-red-600'>Erro ao carregar comentários.</p>";
+        console.error(err);
+      }
+    }
+
+    window.onload = carregarFAQ;
+  </script>
+</body>
+</html>
