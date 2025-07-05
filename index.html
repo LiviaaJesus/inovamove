@@ -3,11 +3,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>InovaMove - Segurança Pública Colaborativa</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+ <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    /* Ajuste para o mapa ocupar o espaço definido */
+    #map { height: 16rem; }
+  </style>
 </head>
 <body class="bg-white text-gray-900 font-sans">
 
@@ -23,18 +26,18 @@
     </nav>
   </header>
 
-  <main class="p-4 space-y-6">
+  <main class="p-4 space-y-6 max-w-4xl mx-auto">
 
     <!-- Mapa com alertas -->
     <section>
       <h2 class="text-xl font-semibold mb-2 text-blue-900">🚨 Alertas ao Vivo</h2>
-      <div id="map" class="w-full h-64 rounded border"></div>
+      <div id="map" class="rounded border"></div>
     </section>
 
     <!-- Formulário de Alerta -->
     <section>
       <h2 class="text-xl font-semibold mb-2 text-green-700">📢 Envie um Alerta</h2>
-      <form id="alertForm" class="bg-gray-100 p-4 rounded shadow space-y-4 max-w-xl">
+      <form id="alertForm" class="bg-gray-100 p-4 rounded shadow space-y-4">
         <input name="descricao" type="text" placeholder="Descrição do incidente" class="w-full p-2 border rounded" required />
         <select name="tipo" class="w-full p-2 border rounded" required>
           <option value="">Tipo de Incidente</option>
@@ -44,8 +47,8 @@
           <option value="Desaparecimento">Desaparecimento</option>
         </select>
         <input name="localText" type="text" placeholder="Local (ex: Rua tal, Bairro)" class="w-full p-2 border rounded" required />
-        <input name="cep" type="text" placeholder="CEP (ex: 41706-755)" class="w-full p-2 border rounded" required />
-        <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded">Enviar Alerta</button>
+        <input name="cep" type="text" placeholder="CEP (ex: 41706-755)" pattern="\d{5}-?\d{3}" title="Digite um CEP válido, ex: 41706-755" class="w-full p-2 border rounded" required />
+        <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition">Enviar Alerta</button>
       </form>
     </section>
 
@@ -56,7 +59,7 @@
 
       <form id="comment-form" class="mb-4">
         <textarea id="user-comment" class="w-full p-3 border border-gray-300 rounded mb-2 resize-none" placeholder="Digite seu comentário aqui..." required></textarea>
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Enviar Comentário</button>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">Enviar Comentário</button>
       </form>
 
       <div id="comments-section" class="space-y-4">
@@ -67,16 +70,14 @@
     <!-- Verificação de Rotas Seguras -->
     <section>
       <h2 class="text-xl font-semibold mb-2">📍 Rotas Seguras</h2>
-      <p class="text-gray-700">Confira trajetos mais seguros segundo dados da comunidade.</p>
+      <p class="text-gray-700 mb-2">Confira trajetos mais seguros segundo dados da comunidade.</p>
 
-      <form id="rota-form" class="bg-gray-100 p-4 rounded shadow space-y-4 max-w-xl">
-        <input id="cep-destino" type="text" placeholder="Digite o CEP de destino (ex: 41706-755)" class="w-full p-2 border rounded" required />
-        <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded">Verificar Rota</button>
+      <form id="rota-form" class="bg-gray-100 p-4 rounded shadow space-y-4">
+        <input id="cep-destino" type="text" placeholder="Digite o CEP de destino (ex: 41706-755)" pattern="\d{5}-?\d{3}" title="Digite um CEP válido, ex: 41706-755" class="w-full p-2 border rounded" required />
+        <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition">Verificar Rota</button>
       </form>
 
-      <div id="rota-resultado" class="bg-white p-4 mt-4 rounded shadow text-gray-800 hidden">
-        <!-- Resultado da rota aparecerá aqui -->
-      </div>
+      <div id="rota-resultado" class="bg-white p-4 mt-4 rounded shadow text-gray-800 hidden"></div>
     </section>
 
   </main>
@@ -87,5 +88,6 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="script.js"></script>
+
 </body>
 </html>
