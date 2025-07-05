@@ -1,9 +1,9 @@
 let map;
 
-// CEPs perigosos para exemplo
+// ✅ Lista de CEPs perigosos
 const cepsPerigosos = ["41706-755", "41710-220", "40285-001"];
 
-// Ícones personalizados para cada tipo de alerta
+// ✅ Ícones personalizados para os alertas
 const icons = {
   "Tiroteio": L.icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/512/252/252025.png",
@@ -31,30 +31,37 @@ const icons = {
   })
 };
 
+// ✅ Inicializa o mapa Leaflet
 function initMap() {
-  map = L.map('map').setView([-12.9761, -38.4554], 15);
+  map = L.map('map').setView([-12.9761, -38.4554], 15); // Boca do Rio - Salvador
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  L.marker([-12.9761, -38.4554])
+  // Exemplo fixo
+  L.marker([-12.9761, -38.4554], { icon: icons["Tiroteio"] })
     .addTo(map)
     .bindPopup('🚨 Alerta exemplo: Tiroteio na região')
     .openPopup();
 }
 
+// ✅ Converte o CEP para coordenadas
 async function getCoordinatesFromCEP(cep) {
   const response = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cep}&country=Brazil&format=json`);
   const data = await response.json();
 
   if (data && data.length > 0) {
-    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+    return {
+      lat: parseFloat(data[0].lat),
+      lon: parseFloat(data[0].lon)
+    };
   } else {
     throw new Error("CEP não localizado no mapa.");
   }
 }
 
+// ✅ Formulário de envio de alerta
 document.getElementById("alertForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -62,24 +69,43 @@ document.getElementById("alertForm").addEventListener("submit", async function (
   const tipo = this.tipo.value;
   const localText = this.localText.value;
   const cep = this.cep.value;
-
-  const dados = { descricao, tipo, localText, cep };
+  const data = new Date().toLocaleString("pt-BR");
 
   try {
     const coords = await getCoordinatesFromCEP(cep);
 
-    L.marker([coords.lat, coords.lon])
+    // Adiciona marcador no mapa
+    L.marker([coords.lat, coords.lon], {
+      icon: icons[tipo] || icons["Desaparecimento"]
+    })
       .addTo(map)
       .bindPopup(`🚨 <strong>${tipo}</strong><br>${descricao}<br><small>${localText}</small>`)
       .openPopup();
 
-    alert("✅ Alerta adicionado ao mapa!");
+    // Envia para Google Sheets via SheetDB
+    const sheetURL = "https://sheetdb.io/api/v1/SEU_CODIGO_AQUI"; // Substitua aqui
+    await fetch(sheetURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        data: {
+          descricao,
+          tipo,
+          localText,
+          cep,
+          data
+        }
+      })
+    });
+
+    alert("✅ Alerta adicionado e salvo!");
     this.reset();
   } catch (err) {
     alert("❌ Erro: " + err.message);
   }
 });
 
+// ✅ Verifica rota com base nos CEPs perigosos
 document.getElementById("rota-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -107,6 +133,7 @@ document.getElementById("rota-form").addEventListener("submit", function (e) {
   rotaResultado.classList.remove("hidden");
 });
 
+// ✅ Comentários da comunidade
 document.getElementById("comment-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -121,4 +148,5 @@ document.getElementById("comment-form").addEventListener("submit", function (e) 
   document.getElementById("user-comment").value = "";
 });
 
+// ✅ Inicia o mapa
 window.onload = initMap;
